@@ -1,0 +1,28 @@
+<%= form_with(model: product, local: true) do |form| %>
+  <% if product.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(product.errors.count, "error") %> prohibited this product from being saved:</h2>
+
+      <ul>
+        <% product.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <% [:title, :description, :image_url, :price].each do |attr| %>
+    <div class="field">
+      <%= form.label attr %>
+      <% if attr.to_s == 'description' %>
+        <%= form.text_area attr, rows: 10, cols: 60 %>
+      <% else %>
+        <%= form.text_field attr %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>
