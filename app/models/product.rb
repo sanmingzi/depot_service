@@ -1,4 +1,7 @@
 class Product < ApplicationRecord
+  has_many :line_items
+  before_destroy  :ensure_not_referenced_by_any_line_item
+
   validates :title, presence: true, uniqueness: {case_sensitive: true}
   validates :description, presence: true
   validates :image_url, presence: true, format: {
