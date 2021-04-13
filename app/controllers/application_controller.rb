@@ -28,6 +28,6 @@ class ApplicationController < ActionController::Base
     end
 
     def authenticate
-      redirect_to ENV['SSO_URL'] unless is_login?
+      redirect_to ENV['LOGIN_URL'] unless is_login?
     end
 end
