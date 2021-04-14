@@ -6,6 +6,7 @@ class Order < ApplicationRecord
   }
 
   has_many :line_items
+  belongs_to :user
 
   validates :name, presence: true
   validates :address, presence: true
