@@ -1,11 +1,10 @@
 module CurrentCart
   private
     def set_cart
-      if nil != session[:cart_id]
-        @cart = Cart.find(session[:cart_id])
-      else
-        @cart = Cart.create
-        session[:cart_id] = @cart.id
+      @cart = nil
+      if current_user
+        current_user.build_cart.save if nil == current_user.cart
+        @cart = current_user.cart
       end
     end
 end
