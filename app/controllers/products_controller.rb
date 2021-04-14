@@ -3,27 +3,30 @@ class ProductsController < ApplicationController
 
   # GET /products or /products.json
   def index
+    authorize Product, :retrieve?
     @products = Product.all
   end
 
   # GET /products/1 or /products/1.json
   def show
+    authorize Product, :retrieve?
   end
 
   # GET /products/new
   def new
+    authorize Product, :create?
     @product = Product.new
   end
 
   # GET /products/1/edit
   def edit
+    authorize Product, :create?
   end
 
   # POST /products or /products.json
   def create
-    puts product_params.inspect
+    authorize Product, :create?
     @product = Product.new(product_params)
-
     respond_to do |format|
       if @product.save
         format.html { redirect_to @product, notice: "Product was successfully created." }
@@ -37,6 +40,7 @@ class ProductsController < ApplicationController
 
   # PATCH/PUT /products/1 or /products/1.json
   def update
+    authorize Product, :update?
     respond_to do |format|
       if @product.update(product_params)
         format.html { redirect_to @product, notice: "Product was successfully updated." }
@@ -50,6 +54,7 @@ class ProductsController < ApplicationController
 
   # DELETE /products/1 or /products/1.json
   def destroy
+    authorize Product, :delete?
     @product.destroy
     respond_to do |format|
       format.html { redirect_to products_url, notice: "Product was successfully destroyed." }

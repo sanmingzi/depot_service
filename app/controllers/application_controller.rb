@@ -1,14 +1,21 @@
 class ApplicationController < ActionController::Base
-  before_action :set_user
+  include Pundit
+  rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
+
+  before_action :set_current_user
   before_action :authenticate
-  helper_method :current_user, :is_login?
+  helper_method :current_user, :pundit_user, :is_login?
 
   def current_user
     @current_user
   end
 
+  def pundit_user
+    UserContext.new(@current_user, session)
+  end
+
   def is_login?
-    @current_user.present?
+    @current_user != nil
   end
 
   private
@@ -16,7 +23,7 @@ class ApplicationController < ActionController::Base
       session[:user] && session[:user][:id]
     end
 
-    def set_user
+    def set_current_user
       @current_user = nil
       if user_id
         username, email = session[:user].fetch_values(:username, :email)
@@ -29,5 +36,10 @@ class ApplicationController < ActionController::Base
 
     def authenticate
       redirect_to ENV['LOGIN_URL'] unless is_login?
+    end
+
+    def user_not_authorized
+      flash[:alert] = "You are not authorized to perform this action."
+      redirect_to(request.referrer || root_path)
     end
 end
