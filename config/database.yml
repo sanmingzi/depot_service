@@ -48,7 +48,4 @@ test:
 #     url: <%= ENV['DATABASE_URL'] %>
 #
 production:
-  <<: *default
-  database: depot_service_production
-  username: depot_service
-  password: <%= ENV['DEPOT_SERVICE_DATABASE_PASSWORD'] %>
+  url: <%= ENV['DEPOT_SERVICE_DATABASE_URL'] %>

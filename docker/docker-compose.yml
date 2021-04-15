@@ -1,0 +1,43 @@
+version: '3.4'
+
+services:
+  # docker-compose build depot_service_db_setup
+  # docker-compose up depot_service_db_setup
+  depot_service_db_setup:
+    build:
+      context: ../
+      network: host
+      dockerfile: ./docker/Dockerfile
+    image: "${IMAGE_NAME}:${TAG}"
+    container_name: "depot_service_db_setup_${TAG}"
+    network_mode: host
+    environment:
+      RAILS_ENV: "${RAILS_ENV}"
+      DISABLE_DATABASE_ENVIRONMENT_CHECK: '1'
+      DEPOT_SERVICE_DATABASE_URL: "${DEPOT_SERVICE_DATABASE_URL}"
+    working_dir: /workspace/depot_service
+    command: /bin/sh -c "bundle exec rails db:setup && bundle exec rails db:migrate && bundle exec rails db:seed"
+
+  # docker-compose up -d depot_service
+  depot_service:
+    build:
+      context: ../
+      network: host
+      dockerfile: ./docker/Dockerfile
+    image: "${IMAGE_NAME}:${TAG}"
+    container_name: "depot_service_${TAG}"
+    restart: always
+    network_mode: host
+    environment:
+      RAILS_ENV: "${RAILS_ENV}"
+      RAILS_LOG_TO_STDOUT: 'true'
+      DISABLE_DATABASE_ENVIRONMENT_CHECK: '1'
+      RAILS_SERVE_STATIC_FILES: 'true'
+      DEPOT_SERVICE_DATABASE_URL: "${DEPOT_SERVICE_DATABASE_URL}"
+      REDIS_CACHE_URL: "${REDIS_CACHE_URL}"
+      REDIS_SESSION_URL: "${REDIS_SESSION_URL}"
+      MAILER_USERNAME: "${MAILER_USERNAME}"
+      MAILER_PASSWORD: "${MAILER_PASSWORD}"
+      LOGIN_URL: "${LOGIN_URL}"
+      LOGOUT_URL: "${LOGOUT_URL}"
+    command: bundle exec rails s -b 0.0.0.0 -p 9000
